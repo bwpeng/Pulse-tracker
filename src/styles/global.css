@@ -1,0 +1,996 @@
+/* ==========================================================================
+   Pulse — design tokens
+   Light and dark are two *selected* palettes, not an automatic inversion.
+   Chart hues come from a validated categorical palette; only three hues are
+   ever on screen together as a colour-coded set (steps / energy / hydration).
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces & ink */
+  --page: #f9f9f7;
+  --surface-1: #ffffff;
+  --surface-2: #f2f1ed;
+  --surface-sunken: #eceae4;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --border: rgba(11, 11, 11, 0.1);
+  --border-strong: rgba(11, 11, 11, 0.18);
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.06), 0 8px 24px rgba(11, 11, 11, 0.06);
+  --overlay: rgba(11, 11, 11, 0.42);
+
+  /* Metric identity — categorical slots 1, 2, 3 (validated all-pairs) */
+  --steps: #2a78d6;
+  --steps-wash: rgba(42, 120, 214, 0.12);
+  --energy: #eb6834;
+  --energy-wash: rgba(235, 104, 52, 0.12);
+  --hydration: #1baf7a;
+  --hydration-wash: rgba(27, 175, 122, 0.12);
+
+  /* Single-series hues (never share a chart with the set above) */
+  --heart: #e34948;
+  --heart-wash: rgba(227, 73, 72, 0.1);
+
+  /* Sequential blue ramp — ordinal use starts no lighter than step 250 */
+  --seq-600: #184f95;
+  --seq-450: #2a78d6;
+  --seq-300: #6da7ec;
+  --seq-250: #86b6ef;
+
+  /* Status — reserved, never reused as a series colour */
+  --good: #0ca30c;
+  --good-text: #006300;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  /* Metrics */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --tap: 44px;
+  --nav-h: calc(58px + env(safe-area-inset-bottom));
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface-1: #1a1a19;
+    --surface-2: #232321;
+    --surface-sunken: #121211;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --overlay: rgba(0, 0, 0, 0.6);
+
+    --steps: #3987e5;
+    --steps-wash: rgba(57, 135, 229, 0.16);
+    --energy: #d95926;
+    --energy-wash: rgba(217, 89, 38, 0.18);
+    --hydration: #199e70;
+    --hydration-wash: rgba(25, 158, 112, 0.18);
+    --heart: #e66767;
+    --heart-wash: rgba(230, 103, 103, 0.14);
+
+    --seq-600: #86b6ef;
+    --seq-450: #3987e5;
+    --seq-300: #256abf;
+    --seq-250: #184f95;
+
+    --good-text: #0ca30c;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface-1: #1a1a19;
+  --surface-2: #232321;
+  --surface-sunken: #121211;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --overlay: rgba(0, 0, 0, 0.6);
+
+  --steps: #3987e5;
+  --steps-wash: rgba(57, 135, 229, 0.16);
+  --energy: #d95926;
+  --energy-wash: rgba(217, 89, 38, 0.18);
+  --hydration: #199e70;
+  --hydration-wash: rgba(25, 158, 112, 0.18);
+  --heart: #e66767;
+  --heart-wash: rgba(230, 103, 103, 0.14);
+
+  --seq-600: #86b6ef;
+  --seq-450: #3987e5;
+  --seq-300: #256abf;
+  --seq-250: #184f95;
+
+  --good-text: #0ca30c;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--steps);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   App shell — phone first, sidebar from 900px up
+   -------------------------------------------------------------------------- */
+
+.shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.main {
+  min-width: 0;
+  padding: 0 16px calc(var(--nav-h) + 16px);
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+.view {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+}
+
+/* Top bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) 0 10px;
+  background: color-mix(in srgb, var(--page) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.topbar__title {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.topbar__sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.topbar__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: var(--tap);
+  height: var(--tap);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-1);
+  color: var(--text-secondary);
+}
+
+.icon-btn:active {
+  transform: scale(0.96);
+}
+
+/* Bottom tab bar (phone / tablet) */
+.tabbar {
+  position: fixed;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-top: 1px solid var(--border);
+}
+
+.tabbar__item {
+  min-height: var(--tap);
+  border: 0;
+  background: none;
+  border-radius: var(--r-sm);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  padding: 4px 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.tabbar__item[aria-current='page'] {
+  color: var(--steps);
+  background: var(--steps-wash);
+}
+
+/* Sidebar (desktop) */
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .shell {
+    grid-template-columns: 248px 1fr;
+    /* Paints the sidebar column for the full page height — a sticky sidebar is
+       only as tall as the viewport, so the colour has to come from the grid. */
+    background: linear-gradient(to right, var(--surface-1) 248px, var(--page) 248px);
+  }
+
+  .tabbar {
+    display: none;
+  }
+
+  .main {
+    padding-bottom: 40px;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    padding: 20px 14px;
+    padding-left: max(14px, env(safe-area-inset-left));
+    border-right: 1px solid var(--border);
+    background: transparent;
+  }
+
+  .sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px 18px;
+    font-size: 17px;
+    font-weight: 680;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: var(--tap);
+    padding: 0 12px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: none;
+    color: var(--text-secondary);
+    font-size: 14.5px;
+    font-weight: 550;
+    text-align: left;
+  }
+
+  .sidebar__item:hover {
+    background: var(--surface-2);
+    color: var(--text-primary);
+  }
+
+  .sidebar__item[aria-current='page'] {
+    background: var(--steps-wash);
+    color: var(--steps);
+  }
+
+  .sidebar__foot {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 12px;
+  }
+
+  .view {
+    gap: 16px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Cards, grids, primitives
+   -------------------------------------------------------------------------- */
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.card__title {
+  font-size: 15px;
+  font-weight: 620;
+  letter-spacing: -0.005em;
+}
+
+.card__sub {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+/* Grid and flex children default to min-width:auto, which lets a wide value
+   push a card past the viewport on a 320px phone. Opt every layout child out. */
+.view,
+.view > *,
+.grid > *,
+.card,
+.row > * {
+  min-width: 0;
+}
+
+.grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--tiles {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .grid--tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .grid--cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row--between {
+  justify-content: space-between;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.secondary {
+  color: var(--text-secondary);
+}
+
+.hero {
+  font-size: 48px;
+  line-height: 1.05;
+  font-weight: 660;
+  letter-spacing: -0.03em;
+}
+
+.units {
+  font-size: 15px;
+  font-weight: 550;
+  color: var(--text-secondary);
+  margin-left: 6px;
+}
+
+/* Stat tile */
+.tile {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-height: 108px;
+}
+
+.tile__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.tile__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.tile__value {
+  font-size: 22px;
+  font-weight: 640;
+  letter-spacing: -0.02em;
+}
+
+.tile__delta {
+  font-size: 12px;
+  font-weight: 560;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.delta--good {
+  color: var(--good-text);
+}
+
+.delta--bad {
+  color: var(--critical);
+}
+
+.delta--flat {
+  color: var(--text-muted);
+}
+
+/* Segmented control */
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.segmented__btn {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 560;
+}
+
+.segmented__btn[aria-pressed='true'] {
+  background: var(--surface-1);
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* Buttons */
+.btn {
+  min-height: var(--tap);
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 580;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--primary {
+  background: var(--text-primary);
+  color: var(--page);
+  border-color: transparent;
+}
+
+.btn--ghost {
+  background: var(--surface-2);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.link-btn {
+  border: 0;
+  background: none;
+  padding: 6px 2px;
+  font-size: 12.5px;
+  font-weight: 560;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Chip row */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 13.5px;
+  font-weight: 550;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Lists */
+.list {
+  display: grid;
+  gap: 2px;
+}
+
+.list__item {
+  display: flex;
+  align-items: center;
+  /* Wraps rather than overflows when a row carries a wide control (a segmented
+     switch, a long value) on a 320px screen. */
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 11px 4px;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+
+.list__item:last-child {
+  border-bottom: 0;
+}
+
+.list__icon {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  font-size: 17px;
+}
+
+.list__body {
+  min-width: 0;
+  flex: 1;
+}
+
+.list__title {
+  font-size: 14px;
+  font-weight: 560;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list__meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.list__value {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* Meter */
+.meter__track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.meter__fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Table view (accessible alternative to every chart) */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+table.data th,
+table.data td {
+  text-align: right;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+table.data th:first-child,
+table.data td:first-child {
+  text-align: left;
+}
+
+table.data thead th {
+  color: var(--text-secondary);
+  font-weight: 560;
+  background: var(--surface-2);
+}
+
+table.data tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 10px;
+}
+
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.legend__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+/* Charts */
+.chart {
+  position: relative;
+  touch-action: pan-y;
+}
+
+/* The SVG is drawn at its container's real pixel width, so it must never be
+   rubber-banded by CSS — a stale measurement would otherwise stretch the whole
+   chart out of shape instead of just leaving it a few pixels narrow. */
+.chart svg {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.chart__tip {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  background: var(--surface-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+  padding: 8px 10px;
+  font-size: 12.5px;
+  min-width: 118px;
+  white-space: nowrap;
+}
+
+.chart__tip-title {
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.chart__tip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart__tip-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.chart__tip-val {
+  font-weight: 620;
+}
+
+.axis-label {
+  font-size: 11px;
+  fill: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mark-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rings */
+.rings {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.rings__legend {
+  display: grid;
+  gap: 10px;
+  flex: 1;
+  min-width: 180px;
+  max-width: 460px;
+}
+
+.ringrow {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.ringrow__key {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.ringrow__val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Sheet (bottom sheet on phone, dialog on desktop) */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--overlay);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fade 0.16s ease;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface-1);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height: 88dvh;
+  overflow-y: auto;
+  animation: rise 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sheet__grip {
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  margin: 4px auto 12px;
+}
+
+.sheet__title {
+  font-size: 17px;
+  font-weight: 640;
+  margin-bottom: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field__label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 550;
+}
+
+.field input,
+.field select {
+  min-height: var(--tap);
+  padding: 0 12px;
+  font: inherit;
+  font-size: 16px; /* prevents iOS zoom-on-focus */
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .sheet-backdrop {
+    align-items: center;
+  }
+
+  .sheet {
+    border-radius: var(--r-lg);
+    padding-bottom: 20px;
+  }
+
+  .sheet__grip {
+    display: none;
+  }
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--nav-h) + 14px);
+  background: var(--text-primary);
+  color: var(--page);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 560;
+  box-shadow: var(--shadow);
+  animation: rise 0.2s ease;
+}
+
+@media (min-width: 900px) {
+  .toast {
+    bottom: 24px;
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}

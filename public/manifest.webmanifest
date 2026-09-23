@@ -1,0 +1,10 @@
+{
+  "name": "Pulse — Health Tracker",
+  "short_name": "Pulse",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9f9f7",
+  "theme_color": "#f9f9f7",
+  "orientation": "any",
+  "icons": []
+}
