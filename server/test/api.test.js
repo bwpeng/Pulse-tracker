@@ -64,6 +64,17 @@ describe('seeding', () => {
 });
 
 describe('auth', () => {
+  it('lists demo accounts without exposing the password', async () => {
+    const { status, body } = await call('/api/demo-accounts', { auth: false });
+    assert.equal(status, 200);
+    assert.equal(body.length, 2);
+    for (const account of body) {
+      assert.ok(account.email && account.name);
+      assert.equal('password' in account, false);
+    }
+    assert.equal(JSON.stringify(body).includes('pulse1234'), false);
+  });
+
   it('refuses protected routes without a session', async () => {
     const { status } = await call('/api/bootstrap', { auth: false });
     assert.equal(status, 401);

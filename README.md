@@ -29,6 +29,10 @@ Open http://localhost:5173 and sign in with either demo account:
 | Alex Rivera | `alex@pulse.demo` | `pulse1234` |
 | Sam Okafor | `sam@pulse.demo` | `pulse1234` |
 
+The sign-in screen lists the accounts but not the password, and the
+`/api/demo-accounts` endpoint does not return it either — this table is the only
+place it appears.
+
 The database seeds itself on first boot. Other scripts:
 
 ```bash

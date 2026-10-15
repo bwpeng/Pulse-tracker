@@ -168,12 +168,13 @@ export function seed({ force = false } = {}) {
   return { seeded: true, users: ids.length };
 }
 
+/** Shown on the sign-in screen so the demo accounts are discoverable. The
+ *  password is deliberately NOT included — it lives in the README only. */
 export const demoAccounts = ACCOUNTS.map(({ email, name, initials, tagline }) => ({
   email,
   name,
   initials,
   tagline,
-  password: DEMO_PASSWORD,
 }));
 
 if (process.argv[1]?.endsWith('seed.js')) {

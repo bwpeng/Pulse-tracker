@@ -17,7 +17,7 @@ export default function Login() {
       .demoAccounts()
       .then((list) => {
         setAccounts(list);
-        setForm({ email: list[0]?.email ?? '', password: list[0]?.password ?? '' });
+        setForm((current) => ({ ...current, email: list[0]?.email ?? '' }));
       })
       .catch(() => setError('Could not reach the API. Is the server running?'));
   }, []);
@@ -60,7 +60,8 @@ export default function Login() {
         </Link>
         <h1 className="auth__title">Sign in</h1>
         <p className="auth__sub">
-          These are fictional demo accounts. Pick one — the password is filled in for you.
+          These are fictional demo accounts. Pick one, then enter the demo password from the
+          project README.
         </p>
 
         <div className="auth__accounts">
@@ -69,7 +70,7 @@ export default function Login() {
               type="button"
               key={account.email}
               className={`auth__account${form.email === account.email ? ' is-active' : ''}`}
-              onClick={() => setForm({ email: account.email, password: account.password })}
+              onClick={() => setForm((current) => ({ ...current, email: account.email }))}
             >
               <span className="auth__avatar">{account.initials}</span>
               <span className="auth__account-body">
