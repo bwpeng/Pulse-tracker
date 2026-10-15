@@ -2,8 +2,8 @@ import { IconMoon, IconPlus, IconSun } from './Icons.jsx';
 import { useApp } from '../store/AppStore.jsx';
 
 export default function TopBar({ title, subtitle, onAdd }) {
-  const { state, dispatch } = useApp();
-  const { theme } = state.settings;
+  const { settings, setPreference } = useApp();
+  const { theme } = settings;
   const next = theme === 'dark' ? 'light' : 'dark';
 
   return (
@@ -17,7 +17,7 @@ export default function TopBar({ title, subtitle, onAdd }) {
           type="button"
           className="icon-btn"
           aria-label={`Switch to ${next} theme`}
-          onClick={() => dispatch({ type: 'setSetting', key: 'theme', value: next })}
+          onClick={() => setPreference('theme', next)}
         >
           {theme === 'dark' ? <IconSun size={19} /> : <IconMoon size={19} />}
         </button>

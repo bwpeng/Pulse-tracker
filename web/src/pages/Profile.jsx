@@ -16,8 +16,9 @@ const GOAL_FIELDS = [
 ];
 
 export default function Profile() {
-  const { state, dispatch, days, profile, units, notify, goals } = useApp();
-  const { theme } = state.settings;
+  const { days, user, units, goals, devices, settings, setGoal, setPreference, resetDemo, logout } =
+    useApp();
+  const { theme } = settings;
 
   const weightSeries = useMemo(
     () =>
@@ -35,9 +36,9 @@ export default function Profile() {
   );
 
   const current = weight(days[days.length - 1].weightKg, units);
-  const target = weight(profile.targetWeightKg, units);
-  const start = weight(profile.startWeightKg, units);
-  const bodyHeight = height(profile.heightCm, units);
+  const target = weight(user.targetWeightKg, units);
+  const start = weight(user.startWeightKg, units);
+  const bodyHeight = height(user.heightCm, units);
 
   return (
     <>
@@ -60,16 +61,17 @@ export default function Profile() {
                 fontSize: 19,
               }}
             >
-              {profile.initials}
+              {user.initials}
             </div>
             <div>
               <h2 className="card__title" style={{ fontSize: 17 }}>
-                {profile.name}
+                {user.name}
               </h2>
               <p className="card__sub">
-                {profile.age} years · {bodyHeight.value} {bodyHeight.unit} · {current.value}{' '}
-                {current.unit}
+                {user.age} years · {bodyHeight.value} {bodyHeight.unit} · {current.value}{' '}
+                {current.unit} · {user.email}
               </p>
+              <p className="card__sub">{user.tagline}</p>
             </div>
           </div>
 
@@ -125,13 +127,7 @@ export default function Profile() {
                       className="icon-btn"
                       style={{ width: 38, height: 38 }}
                       aria-label={`Decrease ${field.label}`}
-                      onClick={() =>
-                        dispatch({
-                          type: 'setGoal',
-                          key: field.key,
-                          value: Math.max(field.step, value - field.step),
-                        })
-                      }
+                      onClick={() => setGoal(field.key, Math.max(field.step, value - field.step))}
                     >
                       –
                     </button>
@@ -140,9 +136,7 @@ export default function Profile() {
                       className="icon-btn"
                       style={{ width: 38, height: 38 }}
                       aria-label={`Increase ${field.label}`}
-                      onClick={() =>
-                        dispatch({ type: 'setGoal', key: field.key, value: value + field.step })
-                      }
+                      onClick={() => setGoal(field.key, value + field.step)}
                     >
                       +
                     </button>
@@ -163,7 +157,7 @@ export default function Profile() {
               <Segmented
                 label="Appearance"
                 value={theme}
-                onChange={(value) => dispatch({ type: 'setSetting', key: 'theme', value })}
+                onChange={(value) => setPreference('theme', value)}
                 options={[
                   { value: 'system', label: 'Auto' },
                   { value: 'light', label: 'Light' },
@@ -179,7 +173,7 @@ export default function Profile() {
               <Segmented
                 label="Units"
                 value={units}
-                onChange={(value) => dispatch({ type: 'setSetting', key: 'units', value })}
+                onChange={(value) => setPreference('units', value)}
                 options={[
                   { value: 'metric', label: 'Metric' },
                   { value: 'imperial', label: 'Imperial' },
@@ -193,10 +187,8 @@ export default function Profile() {
               </div>
               <Segmented
                 label="Table view"
-                value={state.settings.showTables ? 'on' : 'off'}
-                onChange={(value) =>
-                  dispatch({ type: 'setSetting', key: 'showTables', value: value === 'on' })
-                }
+                value={settings.showTables ? 'on' : 'off'}
+                onChange={(value) => setPreference('showTables', value === 'on')}
                 options={[
                   { value: 'off', label: 'Off' },
                   { value: 'on', label: 'On' },
@@ -210,10 +202,8 @@ export default function Profile() {
               </div>
               <Segmented
                 label="Reminders"
-                value={state.settings.reminders ? 'on' : 'off'}
-                onChange={(value) =>
-                  dispatch({ type: 'setSetting', key: 'reminders', value: value === 'on' })
-                }
+                value={settings.reminders ? 'on' : 'off'}
+                onChange={(value) => setPreference('reminders', value === 'on')}
                 options={[
                   { value: 'off', label: 'Off' },
                   { value: 'on', label: 'On' },
@@ -225,7 +215,7 @@ export default function Profile() {
 
         <Card title="Connected devices" subtitle="Simulated — nothing is actually paired">
           <div className="list">
-            {profile.connectedDevices.map((device) => (
+            {devices.map((device) => (
               <div className="list__item" key={device.id}>
                 <span className="list__icon" aria-hidden="true">
                   {device.icon}
@@ -244,25 +234,24 @@ export default function Profile() {
 
         <Card title="Demo data">
           <p className="card__sub" style={{ marginBottom: 12 }}>
-            Ninety days of synthetic history are generated on device from a fixed seed. Anything
-            you log is kept in this browser only; resetting clears it.
+            Ninety days of synthetic history live in the server's SQLite database. Resetting
+            removes everything this account logged by hand and leaves the seeded history in place.
           </p>
-          <button
-            type="button"
-            className="btn btn--block"
-            onClick={() => {
-              dispatch({ type: 'reset' });
-              notify('Demo data reset');
-            }}
-          >
-            Reset demo data
-          </button>
+          <div className="grid grid--2">
+            <button type="button" className="btn btn--block" onClick={() => resetDemo()}>
+              Reset my entries
+            </button>
+            <button type="button" className="btn btn--block" onClick={() => logout()}>
+              Sign out
+            </button>
+          </div>
         </Card>
 
         <p className="banner">
           <span aria-hidden="true">ℹ️</span>
           <span>
-            Pulse is a front-end demo. It is not a medical device and gives no medical advice.
+            Pulse is a demo application. It is not a medical device and gives no medical advice.
+            Every account and reading in it is fictional.
           </span>
         </p>
       </div>

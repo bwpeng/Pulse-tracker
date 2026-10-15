@@ -8,7 +8,6 @@ import StatTile from '../components/StatTile.jsx';
 import TopBar from '../components/TopBar.jsx';
 import LogSheet from '../components/LogSheet.jsx';
 import { useApp } from '../store/AppStore.jsx';
-import { heartRateToday } from '../data/mockData.js';
 import {
   clockFromMinutes,
   compact,
@@ -26,7 +25,7 @@ const RANGES = [
 ];
 
 export default function Activity() {
-  const { days, goals, units } = useApp();
+  const { days, goals, units, heartRate } = useApp();
   const [range, setRange] = useState(7);
   const [sheet, setSheet] = useState(null);
 
@@ -54,12 +53,12 @@ export default function Activity() {
 
   const intraday = useMemo(
     () =>
-      heartRateToday.map((p) => ({
+      heartRate.map((p) => ({
         label: clockFromMinutes(p.minutes).replace(':00', ''),
         full: clockFromMinutes(p.minutes),
         value: p.bpm,
       })),
-    []
+    [heartRate]
   );
 
   const totals = window.reduce(

@@ -6,7 +6,6 @@ import StatTile from '../components/StatTile.jsx';
 import TopBar from '../components/TopBar.jsx';
 import LogSheet from '../components/LogSheet.jsx';
 import { useApp } from '../store/AppStore.jsx';
-import { insights } from '../data/mockData.js';
 import {
   clockFromMinutes,
   compact,
@@ -24,10 +23,9 @@ import {
  * so nothing here asks the reader to tell two hues apart to read a value. */
 
 export default function Today() {
-  const { day, days, goals, units, profile, dispatch, today, notify } = useApp();
+  const { day, days, goals, units, user, insights, addWater } = useApp();
   const [sheet, setSheet] = useState(null);
 
-  const week = days.slice(-7);
   const yesterday = days[days.length - 2];
 
   const rings = [
@@ -68,7 +66,7 @@ export default function Today() {
 
   const hrDelta = day.restingHr - yesterday.restingHr;
   const dayWeight = weight(day.weightKg, units);
-  const startWeight = weight(profile.startWeightKg, units);
+  const startWeight = weight(user.startWeightKg, units);
   const weightChange = Number(dayWeight.value) - Number(startWeight.value);
   const dist = distance(day.distanceKm, units);
   const water = volume(day.waterMl, units);
@@ -187,14 +185,7 @@ export default function Today() {
                   key={ml}
                   type="button"
                   className="chip"
-                  onClick={() => {
-                    dispatch({ type: 'addWater', date: today, ml });
-                    notify(
-                      units === 'imperial'
-                        ? `Logged ${Math.round(ml * 0.033814)} fl oz`
-                        : `Logged ${ml} ml of water`
-                    );
-                  }}
+                  onClick={() => addWater(ml)}
                 >
                   💧 +{units === 'imperial' ? `${Math.round(ml * 0.033814)} fl oz` : `${ml} ml`}
                 </button>
@@ -296,7 +287,7 @@ export default function Today() {
           </div>
         </Card>
 
-        <Card title="Insights" subtitle="Generated from the last 7 days of demo data">
+        <Card title="Insights" subtitle="Computed by the API from your stored history">
           <div className="list">
             {insights.map((item) => (
               <div className="list__item" key={item.id} style={{ alignItems: 'flex-start' }}>
@@ -319,8 +310,8 @@ export default function Today() {
         <p className="banner">
           <span aria-hidden="true">ℹ️</span>
           <span>
-            Demo interface with synthetic data — {week.length} days generated on device. Nothing
-            here is medical advice, and no data leaves this browser.
+            Demo application with synthetic data. Everything on this screen is read from the Pulse
+            API and stored in its SQLite database — nothing here is medical advice.
           </span>
         </p>
       </div>

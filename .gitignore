@@ -1,3 +1,7 @@
 node_modules
 dist
 .vite
+.env
+
+# Runtime database, WAL sidecars and the generated session secret.
+server/data/

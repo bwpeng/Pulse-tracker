@@ -1,20 +1,25 @@
 {
-  "name": "pulse-health-tracker",
+  "name": "pulse-tracker",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "description": "Cross-platform health tracker UI demo (front-end only)",
+  "version": "1.0.0",
+  "description": "Pulse \u2014 a cross-platform health tracker demo: React front end, Express + SQLite back end",
+  "workspaces": [
+    "web",
+    "server"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "dev": "concurrently -n server,web -c cyan,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm run dev --workspace server",
+    "dev:web": "npm run dev --workspace web",
+    "build": "npm run build --workspace web",
+    "seed": "npm run seed --workspace server",
+    "start": "npm run build && npm run start --workspace server",
+    "test": "npm run test --workspace server"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11"
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

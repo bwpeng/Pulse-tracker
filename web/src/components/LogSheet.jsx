@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Sheet from './Sheet.jsx';
 import Segmented from './Segmented.jsx';
-import { quickFoods, quickWorkouts } from '../data/mockData.js';
 import { useApp } from '../store/AppStore.jsx';
 import { ML_TO_FLOZ } from '../lib/format.js';
 
@@ -18,7 +17,9 @@ const WATER_STEPS = [
 ];
 
 export default function LogSheet({ open, onClose, initialMode = 'water' }) {
-  const { dispatch, today, notify, units } = useApp();
+  const { units, catalog, addWater, addMeal, addWorkout } = useApp();
+  const quickFoods = catalog.foods;
+  const quickWorkouts = catalog.workouts;
   const [mode, setMode] = useState(initialMode);
   const [food, setFood] = useState({ name: '', meal: 'Breakfast', calories: '', protein: '', carbs: '', fat: '' });
   const [workout, setWorkout] = useState({ type: 'Run', minutes: '30', calories: '320' });
@@ -29,32 +30,19 @@ export default function LogSheet({ open, onClose, initialMode = 'water' }) {
   };
 
   const logWater = (ml) => {
-    dispatch({ type: 'addWater', date: today, ml });
-    notify(
-      units === 'imperial'
-        ? `Logged ${Math.round(ml * ML_TO_FLOZ)} fl oz`
-        : `Logged ${ml} ml of water`
-    );
+    addWater(ml);
     close();
   };
 
   const logFood = (item) => {
-    dispatch({
-      type: 'addMeal',
-      date: today,
-      meal: {
-        id: `user-${Date.now()}`,
-        meal: item.meal,
-        name: item.name,
-        calories: Number(item.calories) || 0,
-        protein: Number(item.protein) || 0,
-        carbs: Number(item.carbs) || 0,
-        fat: Number(item.fat) || 0,
-        loggedAtMinutes: new Date().getHours() * 60 + new Date().getMinutes(),
-        userAdded: true,
-      },
+    addMeal({
+      meal: item.meal,
+      name: item.name,
+      calories: Number(item.calories) || 0,
+      protein: Number(item.protein) || 0,
+      carbs: Number(item.carbs) || 0,
+      fat: Number(item.fat) || 0,
     });
-    notify(`Added ${item.name}`);
     close();
   };
 
@@ -62,22 +50,12 @@ export default function LogSheet({ open, onClose, initialMode = 'water' }) {
     const minutes = Number(workout.minutes) || 0;
     if (!minutes) return;
     const picked = quickWorkouts.find((w) => w.type === workout.type);
-    dispatch({
-      type: 'addWorkout',
-      date: today,
-      workout: {
-        id: `user-${Date.now()}`,
-        type: workout.type,
-        icon: picked?.icon ?? '🏃',
-        minutes,
-        calories: Number(workout.calories) || Math.round(minutes * 7),
-        distanceKm: 0,
-        avgHr: 132,
-        startMinutes: new Date().getHours() * 60 + new Date().getMinutes(),
-        userAdded: true,
-      },
+    addWorkout({
+      type: workout.type,
+      icon: picked?.icon ?? '🏃',
+      minutes,
+      calories: Number(workout.calories) || Math.round(minutes * 7),
     });
-    notify(`${workout.type} · ${minutes} min logged`);
     close();
   };
 

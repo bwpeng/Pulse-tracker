@@ -33,7 +33,7 @@ function sumMacros(meals) {
 }
 
 export default function Nutrition() {
-  const { day, days, goals, dispatch, today, notify } = useApp();
+  const { day, days, goals, removeMeal } = useApp();
   const [open, setOpen] = useState(false);
 
   const totals = useMemo(() => sumMacros(day.meals), [day.meals]);
@@ -177,10 +177,7 @@ export default function Nutrition() {
                         <button
                           type="button"
                           className="link-btn"
-                          onClick={() => {
-                            dispatch({ type: 'removeMeal', date: today, id: item.id });
-                            notify('Entry removed');
-                          }}
+                          onClick={() => removeMeal(item.id)}
                         >
                           Remove
                         </button>
